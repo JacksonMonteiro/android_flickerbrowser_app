@@ -21,6 +21,7 @@ class GetRawData : AsyncTask<String, Void, String>() {
 
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
+        Log.d(TAG, "OnPostExecute called, parameter is $result")
     }
 
     override fun doInBackground(vararg params: String?): String {
