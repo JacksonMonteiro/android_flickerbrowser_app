@@ -6,14 +6,16 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete {
     private val TAG = "MainActivity"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val getRawData = GetRawData()
+        val getRawData = GetRawData(this)
+        // getRawData.setDownloadCompleteListener(this)
         getRawData.execute("https://api.flickr.com/services/feeds/photos_public.gne?tags=android,oreo&format=json&nojsoncallback=1")
 
     }
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun onDownloadingComplete(data: String, status: DownloadStatus) {
+    override fun onDownloadComplete(data: String, status: DownloadStatus) {
         if (status == DownloadStatus.OK) {
             Log.d(TAG, "onDownloadComplete called data is $data")
         } else {
