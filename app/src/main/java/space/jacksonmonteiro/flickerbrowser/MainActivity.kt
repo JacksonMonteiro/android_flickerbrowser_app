@@ -1,12 +1,14 @@
 package space.jacksonmonteiro.flickerbrowser
 
+import android.net.Uri
+import android.nfc.NdefRecord.createUri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 
-class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete, GetFlickrJsonData.onDataAvailable {
+class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete, GetFlickrJsonData.OnDataAvailable {
     private val TAG = "MainActivity"
 
 
@@ -14,8 +16,21 @@ class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete, GetFlic
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var url = createUri("https://api.flickr.com/services/feeds/photos_public.gne", "android,oreo,", "en-us", true)
         val getRawData = GetRawData(this)
-        getRawData.execute("https://api.flickr.com/services/feeds/photos_public.gne?tags=android,oreo&format=json&nojsoncallback=1")
+        getRawData.execute(url)
+    }
+
+    private fun createUri(baseUrl: String, searchCriteria: String, lang: String, matchAll: Boolean): String {
+        Log.d(TAG, "Create URL starts")
+        return Uri.parse(baseUrl)
+            .buildUpon()
+            .appendQueryParameter("tags", searchCriteria)
+            .appendQueryParameter("tagmode", if (matchAll) "ALL" else "ANY")
+            .appendQueryParameter("lang",  lang)
+            .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
+            .build().toString()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
