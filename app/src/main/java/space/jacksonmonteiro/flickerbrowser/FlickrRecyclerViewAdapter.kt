@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 //
 // Created by Jackson Monteiro on 13/12/2022
@@ -19,7 +20,13 @@ class FlickrRecyclerViewAdapter(private var photoList : List<Photo>) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: FlickrImageViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val photoItem = photoList[position]
+        Picasso.get().load(photoItem.image)
+            .error(R.drawable.ic_placeholder)
+            .placeholder(R.drawable.ic_placeholder)
+            .into(holder.thumbnail)
+
+        holder.title.text = photoItem.title
     }
 
     override fun getItemCount(): Int {
