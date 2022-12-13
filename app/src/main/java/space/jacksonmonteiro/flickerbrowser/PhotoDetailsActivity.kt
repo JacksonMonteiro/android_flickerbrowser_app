@@ -6,9 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import space.jacksonmonteiro.flickerbrowser.databinding.ActivityPhotoDetailsBinding
 
-class PhotoDetailsActivity : AppCompatActivity() {
+class PhotoDetailsActivity : BaseActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityPhotoDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,12 +15,8 @@ class PhotoDetailsActivity : AppCompatActivity() {
 
         binding = ActivityPhotoDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        activateToolbar(true)
 
-        setSupportActionBar(binding.toolbar)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
     }
 }

@@ -1,5 +1,6 @@
 package space.jacksonmonteiro.flickerbrowser
 
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import space.jacksonmonteiro.flickerbrowser.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete,
+class MainActivity : BaseActivity(), GetRawData.onDownloadComplete,
     GetFlickrJsonData.OnDataAvailable, RecyclerItemClickListener.OnRecyclerClickListener {
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete,
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        activateToolbar(false)
 
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -51,6 +52,12 @@ class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete,
     override fun onItemLongClick(view: View, position: Int) {
         Log.d(TAG, "onItemLongClick starts")
         Toast.makeText(this, "Long tap at a position $position", Toast.LENGTH_SHORT).show()
+        val photo = flickRecyclerViewAdapter.getPhoto(position)
+        if (photo != null) {
+            val intent = Intent(this, PhotoDetailsActivity::class.java)
+            intent.putExtra(PHOTO_TRANSFER, photo)
+            startActivity(intent)
+        }
     }
 
     private fun createUri(
