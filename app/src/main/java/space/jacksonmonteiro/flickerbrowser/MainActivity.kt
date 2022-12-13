@@ -1,33 +1,70 @@
 package space.jacksonmonteiro.flickerbrowser
 
 import android.net.Uri
-import android.nfc.NdefRecord.createUri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import space.jacksonmonteiro.flickerbrowser.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete, GetFlickrJsonData.OnDataAvailable {
+class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete,
+    GetFlickrJsonData.OnDataAvailable, RecyclerItemClickListener.OnRecyclerClickListener {
     private val TAG = "MainActivity"
+    private lateinit var binding: ActivityMainBinding
 
+    private val flickRecyclerViewAdapter = FlickrRecyclerViewAdapter(ArrayList())
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        var url = createUri("https://api.flickr.com/services/feeds/photos_public.gne", "android,oreo,", "en-us", true)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+
+        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addOnItemTouchListener(RecyclerItemClickListener(this, recyclerView, this))
+        recyclerView.adapter = flickRecyclerViewAdapter
+
+
+        var url = createUri(
+            "https://api.flickr.com/services/feeds/photos_public.gne",
+            "android,oreo",
+            "en-us",
+            true
+        )
         val getRawData = GetRawData(this)
         getRawData.execute(url)
     }
 
-    private fun createUri(baseUrl: String, searchCriteria: String, lang: String, matchAll: Boolean): String {
+    override fun onItemClick(view: View, position: Int) {
+        Log.d(TAG, "onItemClick starts")
+        Toast.makeText(this, "Normal tap at a position $position", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onItemLongClick(view: View, position: Int) {
+        Log.d(TAG, "onItemLongClick starts")
+        Toast.makeText(this, "Long tap at a position $position", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun createUri(
+        baseUrl: String,
+        searchCriteria: String,
+        lang: String,
+        matchAll: Boolean
+    ): String {
         Log.d(TAG, "Create URL starts")
         return Uri.parse(baseUrl)
             .buildUpon()
             .appendQueryParameter("tags", searchCriteria)
             .appendQueryParameter("tagmode", if (matchAll) "ALL" else "ANY")
-            .appendQueryParameter("lang",  lang)
+            .appendQueryParameter("lang", lang)
             .appendQueryParameter("format", "json")
             .appendQueryParameter("nojsoncallback", "1")
             .build().toString()
@@ -39,7 +76,7 @@ class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete, GetFlic
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.example -> true
             else -> super.onOptionsItemSelected(item)
         }
@@ -58,10 +95,12 @@ class MainActivity : AppCompatActivity(), GetRawData.onDownloadComplete, GetFlic
 
     override fun onDataAvailable(data: List<Photo>) {
         Log.d(TAG, "onDataAvailable called, data is $data")
+        flickRecyclerViewAdapter.loadNewData(data)
         Log.d(TAG, "onDataAvailable ends")
     }
 
     override fun onError(exception: Exception) {
         Log.d(TAG, "onError called with ${exception.message}")
     }
+
 }
