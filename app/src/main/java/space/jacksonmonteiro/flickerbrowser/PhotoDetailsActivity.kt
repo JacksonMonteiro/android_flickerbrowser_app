@@ -3,11 +3,7 @@ package space.jacksonmonteiro.flickerbrowser
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.ui.AppBarConfiguration
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 import space.jacksonmonteiro.flickerbrowser.databinding.ActivityPhotoDetailsBinding
 
 class PhotoDetailsActivity : BaseActivity() {
@@ -25,7 +21,7 @@ class PhotoDetailsActivity : BaseActivity() {
         setContentView(binding.root)
         activateToolbar(true)
 
-        val photo = intent.getSerializableExtra(PHOTO_TRANSFER) as Photo
+        val photo = intent.getParcelableExtra<Photo>(PHOTO_TRANSFER) as Photo
         photoTitle = findViewById(R.id.photo_title)
         photoAuthor = findViewById(R.id.photo_author)
         photoTags = findViewById(R.id.photo_tags)
