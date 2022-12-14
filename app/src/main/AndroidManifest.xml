@@ -18,26 +18,30 @@
             android:name=".PhotoDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_photo_details"
-            android:theme="@style/Theme.FlickerBrowser.NoActionBar">
+            android:theme="@style/Theme.FlickerBrowser.NoActionBar"
+            android:parentActivityName=".MainActivity">
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".SearchActivity"
             android:exported="false"
             android:label="@string/title_activity_search"
-            android:theme="@style/Theme.FlickerBrowser.NoActionBar">
+            android:theme="@style/Theme.FlickerBrowser.NoActionBar"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
