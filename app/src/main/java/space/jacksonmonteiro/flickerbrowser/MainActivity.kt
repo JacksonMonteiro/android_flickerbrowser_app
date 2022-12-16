@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import space.jacksonmonteiro.flickerbrowser.databinding.ActivityMainBinding
@@ -32,16 +33,6 @@ class MainActivity : BaseActivity(), GetRawData.onDownloadComplete,
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addOnItemTouchListener(RecyclerItemClickListener(this, recyclerView, this))
         recyclerView.adapter = flickRecyclerViewAdapter
-
-
-        var url = createUri(
-            "https://api.flickr.com/services/feeds/photos_public.gne",
-            "android,oreo",
-            "en-us",
-            true
-        )
-        val getRawData = GetRawData(this)
-        getRawData.execute(url)
     }
 
     override fun onItemClick(view: View, position: Int) {
@@ -116,5 +107,20 @@ class MainActivity : BaseActivity(), GetRawData.onDownloadComplete,
     override fun onResume() {
         Log.d(TAG, "onResume called")
         super.onResume()
+
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val queryResult = sharedPrefs.getString(FLICKR_QUERY, "")
+        if (queryResult != null && queryResult.isNotEmpty()) {
+            var url = createUri(
+                "https://api.flickr.com/services/feeds/photos_public.gne",
+                queryResult,
+                "en-us",
+                true
+            )
+            val getRawData = GetRawData(this)
+            getRawData.execute(url)
+        }
+
+        Log.d(TAG, "onResume ends")
     }
 }

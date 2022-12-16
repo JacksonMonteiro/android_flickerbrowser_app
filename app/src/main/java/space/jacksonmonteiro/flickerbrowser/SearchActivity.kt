@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import androidx.appcompat.widget.SearchView
+import androidx.preference.PreferenceManager
 import space.jacksonmonteiro.flickerbrowser.databinding.ActivitySearchBinding
 
 class SearchActivity : BaseActivity() {
@@ -37,6 +38,11 @@ class SearchActivity : BaseActivity() {
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d(TAG, ".onQueryTextSubmit called")
+
+                val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                sharedPrefs.edit().putString(FLICKR_QUERY, query).apply()
+                searchView?.clearFocus()
+
                 finish()
                 return true
             }
@@ -46,6 +52,10 @@ class SearchActivity : BaseActivity() {
             }
         })
 
+        searchView?.setOnCloseListener {
+            finish()
+            false
+        }
         return true
     }
 
