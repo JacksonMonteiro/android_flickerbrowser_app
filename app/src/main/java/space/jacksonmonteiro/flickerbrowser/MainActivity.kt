@@ -113,4 +113,8 @@ class MainActivity : BaseActivity(), GetRawData.onDownloadComplete,
         Log.d(TAG, "onError called with ${exception.message}")
     }
 
+    override fun onResume() {
+        Log.d(TAG, "onResume called")
+        super.onResume()
+    }
 }
